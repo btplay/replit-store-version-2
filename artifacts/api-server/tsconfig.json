@@ -1,6 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "composite": true,          // Required for projects used in references
+    "declaration": true,        // Generates the .d.ts files your routing needs
+    "declarationMap": true,     // Maps the types back to the source code
     "outDir": "dist",
     "rootDir": "src",
     "types": ["node"]
