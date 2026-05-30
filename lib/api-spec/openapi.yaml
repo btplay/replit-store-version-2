@@ -1,0 +1,360 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: BT Play API — Luxury Soft Play Hire
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: packages
+    description: Soft play packages
+  - name: enquiries
+    description: Booking enquiries
+  - name: contacts
+    description: Contact form submissions
+  - name: newsletter
+    description: Newsletter subscriptions
+  - name: testimonials
+    description: Customer testimonials
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /packages:
+    get:
+      operationId: listPackages
+      tags: [packages]
+      summary: List all packages
+      responses:
+        "200":
+          description: List of packages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Package"
+
+  /packages/{id}:
+    get:
+      operationId: getPackage
+      tags: [packages]
+      summary: Get a package by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Package details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Package"
+        "404":
+          description: Not found
+
+  /testimonials:
+    get:
+      operationId: listTestimonials
+      tags: [testimonials]
+      summary: List customer testimonials
+      responses:
+        "200":
+          description: List of testimonials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+
+  /enquiries:
+    post:
+      operationId: createEnquiry
+      tags: [enquiries]
+      summary: Submit a booking enquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnquiryInput"
+      responses:
+        "201":
+          description: Enquiry submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Enquiry"
+        "400":
+          description: Validation error
+
+  /contacts:
+    post:
+      operationId: createContact
+      tags: [contacts]
+      summary: Submit a contact form message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "201":
+          description: Contact submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contact"
+        "400":
+          description: Validation error
+
+  /availability:
+    get:
+      operationId: getAvailability
+      tags: [availability]
+      summary: Get unavailable dates
+      responses:
+        "200":
+          description: List of unavailable dates
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Availability"
+
+  /newsletter:
+    post:
+      operationId: subscribeNewsletter
+      tags: [newsletter]
+      summary: Subscribe to newsletter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterInput"
+      responses:
+        "201":
+          description: Subscribed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterSubscriber"
+        "409":
+          description: Already subscribed
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Package:
+      type: object
+      required: [id, name, tagline, description, features, accentColor, popular, sortOrder]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tagline:
+          type: string
+        description:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        accentColor:
+          type: string
+        popular:
+          type: boolean
+        sortOrder:
+          type: integer
+        priceFrom:
+          type: ["string", "null"]
+        idealFor:
+          type: ["string", "null"]
+        ageRange:
+          type: ["string", "null"]
+        setupDuration:
+          type: ["string", "null"]
+
+    Testimonial:
+      type: object
+      required: [id, customerName, eventType, quote, rating]
+      properties:
+        id:
+          type: integer
+        customerName:
+          type: string
+        eventType:
+          type: string
+        quote:
+          type: string
+        rating:
+          type: integer
+        location:
+          type: ["string", "null"]
+
+    EnquiryInput:
+      type: object
+      required: [name, email, phone, eventDate, eventType, packageInterest]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        eventDate:
+          type: string
+        eventTime:
+          type: string
+        venue:
+          type: string
+        eventType:
+          type: string
+        childAgeRange:
+          type: string
+        packageInterest:
+          type: string
+        guestCount:
+          type: ["integer", "null"]
+        deliveryCharge:
+          type: ["number", "null"]
+        additionalDetails:
+          type: string
+
+    Enquiry:
+      type: object
+      required: [id, name, email, eventType, packageInterest, status, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        eventDate:
+          type: ["string", "null"]
+        eventTime:
+          type: ["string", "null"]
+        venue:
+          type: ["string", "null"]
+        eventType:
+          type: string
+        childAgeRange:
+          type: ["string", "null"]
+        packageInterest:
+          type: string
+        guestCount:
+          type: ["integer", "null"]
+        deliveryCharge:
+          type: ["string", "null"]
+        additionalDetails:
+          type: ["string", "null"]
+        status:
+          type: string
+        deliveryConfirmed:
+          type: string
+        bookingReference:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    ContactInput:
+      type: object
+      required: [name, email, message]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        message:
+          type: string
+          minLength: 1
+
+    Contact:
+      type: object
+      required: [id, name, email, message, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        message:
+          type: string
+        createdAt:
+          type: string
+
+    NewsletterInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        marketingConsent:
+          type: boolean
+
+    Availability:
+      type: object
+      required: [unavailableDates]
+      properties:
+        unavailableDates:
+          type: array
+          items:
+            type: string
+
+    NewsletterSubscriber:
+      type: object
+      required: [id, email, createdAt]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: ["string", "null"]
+        marketingConsent:
+          type: boolean
+        createdAt:
+          type: string
