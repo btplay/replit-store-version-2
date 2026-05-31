@@ -1,9 +1,9 @@
 import express, { type Express } from "express";
 import cors from "cors";
-import { pinoHttp } from "pino-http"; // 1. Fixed the import here
-import router from "./routes";
+import { pinoHttp } from "pino-http"; 
+import router from "./routes/index.js"; // 👈 Fixed: Explicitly added /index.js for ESM resolution
 import { logger } from "./lib/logger";
-import type { IncomingMessage, ServerResponse } from "http"; // 2. Imported Node's core HTTP types
+import type { IncomingMessage, ServerResponse } from "http"; 
 
 const app: Express = express();
 
@@ -11,7 +11,6 @@ app.use(
   pinoHttp({
     logger,
     serializers: {
-      // 3. Added explicit types to 'req' and 'res' to fix the TS7006 "implicit any" errors
       req(req: IncomingMessage & { id?: string }) {
         return {
           id: req.id,
