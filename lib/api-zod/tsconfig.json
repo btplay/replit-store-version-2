@@ -2,10 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
+    "declaration": true,        // 👈 Add this (keeps generating the types)
     "declarationMap": true,
-    "emitDeclarationOnly": true,
     "outDir": "dist",
     "rootDir": "src"
+    // 👈 REMOVED
   },
   "include": ["src"]
 }
