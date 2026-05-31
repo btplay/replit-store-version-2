@@ -1,7 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,          // Required for projects used in references
+    "composite": true,
+    "noEmitOnError": false, // 👈 Add this temporarily
     "declaration": true,        // Generates the .d.ts files your routing needs
     "declarationMap": true,     // Maps the types back to the source code
     "outDir": "dist",
